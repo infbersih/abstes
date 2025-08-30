@@ -24,7 +24,11 @@
       const scanParts = ["12345", "Budi", "10A", "08123456789", "08987654321"];
       const kondisi = "Hadir";
       const alasan = "ada keperluan keluarga";
-      const timestamp = new Date().toISOString();
+      // Format ke waktu Jakarta
+      const now = new Date();
+      const offsetMs = 7 * 60 * 60 * 1000; // offset GMT+7
+      const jakarta = new Date(now.getTime() + offsetMs - (now.getTimezoneOffset() * 60000));
+      const timestamp = jakarta.toISOString().slice(0, 19).replace("T", " ");
 
       const resultEl = document.getElementById("result");
       resultEl.textContent = "⏳ Mengirim data...";
