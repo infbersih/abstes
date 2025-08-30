@@ -2,48 +2,35 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Absensi Otomatis</title>
+  <title>Form Simpan ke Google Sheets</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    #result {
-      margin-top: 15px;
-      font-weight: bold;
-      padding: 10px;
-      border-radius: 8px;
-      display: inline-block;
-    }
-    .success { color: green; background: #e6ffe6; }
-    .error   { color: red; background: #ffe6e6; }
-    .loading { color: blue; background: #e6f0ff; }
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    button { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; }
+    .success { color: green; margin-top: 10px; }
+    .error { color: red; margin-top: 10px; }
   </style>
 </head>
 <body>
-  <h2>Absensi Siswa</h2>
+  <h2>Test Kirim Data ke Google Sheets</h2>
 
-  <!-- Tombol kirim -->
-  <button id="sendBtn">Kirim Data</button>
-
-  <!-- Tempat notifikasi -->
+  <button id="btnSimpan">Simpan Data</button>
   <div id="result"></div>
 
   <script>
-    // URL Web App GAS (ganti dengan URL Anda)
     const webhookURL = "https://script.google.com/macros/s/AKfycbyJYotpum3BLRHk9VNOngElWqKEaBV3r_l3BecuiQE_zuqaA5HPuMvWhyse5OOK5kyJ/exec";
-    const resultEl = document.getElementById("result");
-    const sendBtn = document.getElementById("sendBtn");
 
-    // Contoh data absensi
-    const scanParts = ["12345", "Budi", "10A", "+6281500000000", "+6281500000001"];
-    const kondisi = "Hadir";
-    const timestamp = new Date().toLocaleString();
+    document.getElementById("btnSimpan").addEventListener("click", () => {
+      // contoh data dummy
+      const scanParts = ["12345", "Budi", "10A", "08123456789", "08987654321"];
+      const kondisi = "Hadir";
+      const timestamp = new Date().toISOString();
 
-    sendBtn.addEventListener("click", () => {
+      const resultEl = document.getElementById("result");
       resultEl.textContent = "⏳ Mengirim data...";
-      resultEl.className = "loading";
 
       fetch(webhookURL, {
         method: "POST",
-        body: JSON.stringify({
+        body: new URLSearchParams({
           nis: scanParts[0],
           nama: scanParts[1],
           kelas: scanParts[2],
@@ -52,7 +39,7 @@
           kondisi: kondisi,
           timestamp: timestamp
         }),
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/x-www-form-urlencoded" }
       })
       .then(res => res.json())
       .then(json => {
@@ -60,7 +47,7 @@
           resultEl.textContent = "✅ " + json.message;
           resultEl.className = "success";
         } else {
-          resultEl.textContent = "⚠️ Gagal: " + json.message;
+          resultEl.textContent = "❌ Gagal: " + json.message;
           resultEl.className = "error";
         }
       })
