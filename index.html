@@ -23,6 +23,7 @@
       // contoh data dummy
       const scanParts = ["12345", "Budi", "10A", "08123456789", "08987654321"];
       const kondisi = "Hadir";
+      const alasan = "ada keperluan keluarga";
       const timestamp = new Date().toISOString();
 
       const resultEl = document.getElementById("result");
@@ -31,12 +32,14 @@
       fetch(webhookURL, {
         method: "POST",
         body: new URLSearchParams({
+          timestamp: timestamp,
           nis: scanParts[0],
           nama: scanParts[1],
           kelas: scanParts[2],
+          kondisi: kondisi,
+          alasan: alasan,
           hp1: scanParts[3],
           hp2: scanParts[4],
-          kondisi: kondisi,
           timestamp: timestamp
         }),
         headers: { "Content-Type": "application/x-www-form-urlencoded" }
